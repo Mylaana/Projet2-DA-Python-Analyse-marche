@@ -12,5 +12,7 @@ def extraction_categorie_livre(nom_cat, lien_page, output_directory):
     reponse = requests.get(lien_page, timeout=10)
     page_categorie = reponse.content
     parse_restriction = SoupStrainer("ol", attrs={"class": "row"})
-    exp.export_textfile(DEBUG, output_directory, "parsing "+ nom_cat,
-                    BeautifulSoup(page_categorie, "html.parser", parse_only=parse_restriction))
+    categorie_soup = BeautifulSoup(page_categorie, "html.parser", parse_only=parse_restriction)
+    livre_soup = categorie_soup.find_all("li", class_="col")
+    type(livre_soup)
+    exp.export_textfile(DEBUG, output_directory, "parsing "+ nom_cat, livre_soup)
