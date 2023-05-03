@@ -1,4 +1,4 @@
-#module d'extraction des données du site web
+"""module d'extraction des données du site web"""
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 import scrapper_export as exp
