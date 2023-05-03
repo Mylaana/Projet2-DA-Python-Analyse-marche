@@ -28,6 +28,6 @@ def extraction_categorie_livre(nom_cat, lien_page, output_directory):
     page_categorie = reponse.content
     export_textfile(DEBUG, output_directory, "parsing "+ nom_cat,
                     BeautifulSoup(page_categorie, "html.parser"))
-    
+     
 
 #limiter parsing a "OL class= row"
