@@ -18,3 +18,11 @@ def export_textfile(debug, directory, textfile_name, text_value):
                 output_textfile.write(str(line) + "\n")
         else:
             output_textfile.write(str(text_value))
+
+def export_csv(data: dict, nom_fichier_csv: str, save_path: str):
+    """exportation d'un dictionnaire de donnée en format CSV"""
+
+    with open(save_path + nom_fichier_csv + ".csv", "w",encoding="utf-8") as fichier_csv:
+        writer = csv.writer(fichier_csv, delimiter=",")
+        for ligne in data:
+            writer.writerow(data[ligne])

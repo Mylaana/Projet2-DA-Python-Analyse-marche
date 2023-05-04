@@ -28,9 +28,10 @@ page_main_soup = BeautifulSoup(
 
 # récupération des catégories de livre
 categorie_soup = page_main_soup.find_all("a", href=True)
-dict_categorie = {}  # "categorie": "lien"
+dict_categorie = {}  # "nom categorie": "lien vers sa page"
 for categorie in categorie_soup:
-    nom_categorie = str(categorie.string).strip().lower().replace(" ", "_")
+    nom_categorie = str(categorie.string).strip().lower().replace(
+        " ", "_")  # pylint: disable=C0103
     if nom_categorie.upper() == "books".upper():
         continue
 
@@ -43,11 +44,19 @@ for categorie in categorie_soup:
 exp.export_textfile(DEBUG, OUTPUT_PATH,
                     "dictionnaire categories", dict_categorie)
 
+
 # extraction de catégorie de livre
 for categorie, lien in dict_categorie.items():
-    if categorie == "fantasy":
-        category_path = OUTPUT_PATH + "/" + categorie.upper()
-        if not os.path.exists(category_path):
-            os.mkdir(category_path)
-        ext.extraction_categorie_livre(
-            categorie, dict_categorie[categorie], category_path)
+    # todel to del quand on bouclera sur toutes les cat
+
+    categorie_path = OUTPUT_PATH + "/" + categorie.upper() + "/"
+    if categorie != "fantasy":
+
+        continue
+
+    if not os.path.exists(categorie_path):
+        os.mkdir(categorie_path)
+
+    dict_livres = ext.extraction_soupe_page_categorie(
+        categorie, dict_categorie[categorie], categorie_path)
+    exp.export_csv(dict_livres, categorie, categorie_path)
