@@ -28,12 +28,6 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
     categorie_soup = extraction_soupe_page_lien(
         lien_page)  # , SoupStrainer("ol", attrs={"class": "row"})) delete
 
-    """
-    exp.export_textfile(DEBUG, output_directory,
-                        "parsing " + nom_cat, categorie_soup)
-    exp.export_textfile(DEBUG, output_directory, "parsing " +
-                        nom_cat + "findall", str(bloc_livre_soup))
-    """
     dict_livre = {"header": {"livre_url": "product_page_url",
                              "upc": "universal_ product_code (upc)",
                              "titre": "title", "prix_ttc":  "price_including_tax",
@@ -45,10 +39,9 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
     page_categorie_nombre = extract_nombre_pages_categorie(categorie_soup) - 1
 
     for index_page in range(page_categorie_nombre):
-        print("page : " + str(index_page + 1))
-        if not index_page == 1: #on charge la soup de page suivante
+        if not index_page == 0: #on charge la soup de page suivante
             categorie_soup = extraction_soupe_page_lien(lien_page.replace(
-                    "index","page-" + index_page))
+                    "index","page-" + str(index_page)))
 
         bloc_livre_soup = categorie_soup.find_all(
             "li", {"class": re.compile("col*")})

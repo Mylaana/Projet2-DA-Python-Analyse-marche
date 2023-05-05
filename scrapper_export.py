@@ -1,5 +1,7 @@
 """module contenant les fonctions d'exportation"""
+import shutil
 import csv
+import requests
 
 DEBUG = False
 
@@ -26,3 +28,16 @@ def export_csv(data: dict, nom_fichier_csv: str, save_path: str):
         writer = csv.writer(fichier_csv, delimiter=",")
         for ligne in data:
             writer.writerow(data[ligne].values())
+
+def export_img(image_url: str, image_nom: str, save_path: str):
+    """
+    exportation d'une image à partir du lien, vers le dossier spécifié
+    """
+    res = requests.get(image_url, stream = True, timeout= 10)
+    image_extension = "." + image_url.split(R".")[-1]
+
+    if res.status_code == 200:
+        with open(save_path + image_nom + image_extension,'wb') as f:
+            shutil.copyfileobj(res.raw, f)
+    else:
+        print("could not download image : " + image_nom)
