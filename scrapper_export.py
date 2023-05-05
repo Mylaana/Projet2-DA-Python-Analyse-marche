@@ -1,7 +1,10 @@
 """module contenant les fonctions d'exportation"""
 import shutil
 import csv
+import re
 import requests
+import scrapper_gene as gene
+
 
 DEBUG = False
 
@@ -33,11 +36,17 @@ def export_img(image_url: str, image_nom: str, save_path: str):
     """
     exportation d'une image à partir du lien, vers le dossier spécifié
     """
+
     res = requests.get(image_url, stream = True, timeout= 10)
-    image_extension = "." + image_url.split(R".")[-1]
+    image_extension = R"." + image_url.split(R".")[-1]
+
+    print(image_nom + image_extension)
+    if len(image_nom) > 100:
+        image_nom = image_nom[0:99]
 
     if res.status_code == 200:
-        with open(save_path + image_nom + image_extension,'wb') as fichier_image:
+        with open(save_path + gene.no_char_spe(image_nom).
+                  replace(" ","-") + image_extension,'wb') as fichier_image:
             shutil.copyfileobj(res.raw, fichier_image)
     else:
         print("could not download image : " + image_nom)

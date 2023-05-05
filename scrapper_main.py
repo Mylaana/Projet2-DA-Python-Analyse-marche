@@ -49,27 +49,27 @@ exp.export_textfile(DEBUG, OUTPUT_PATH,"dictionnaire categories", dict_categorie
 # extraction et exportation des catégories de livre
 for categorie, lien in dict_categorie.items():
     categorie_path = OUTPUT_PATH + "/" + categorie.upper().replace("-", " ") + "/"
+    """
+    if categorie != "sequential art":     # todel to del quand on bouclera sur toutes les cat
+        continue
+    """
 
     if not os.path.exists(categorie_path):
         os.mkdir(categorie_path)
 
     dict_livres = ext.extraction_soupe_page_categorie(
-        categorie, dict_categorie[categorie], categorie_path)
+        categorie, lien, categorie_path)
     exp.export_csv(dict_livres, categorie, categorie_path)
 
     #creation d'un dossier "IMAGE"
-    image_path = categorie_path + "/IMAGE/"
+    image_path = categorie_path + "IMAGE/"
     os.mkdir(image_path)
 
     for livre_nom, livre_info  in dict_livres.items():
         if livre_nom.lower() == "header":
             continue
-
-        exp.export_img(livre_info["image_url"],livre_info["titre"],image_path)
+        exp.export_img(livre_info["image_url"], livre_info["titre"], image_path)
 
     print("done : "+ categorie)
-
-    if categorie == "mystery":     # todel to del quand on bouclera sur toutes les cat
-        break
 
 print("end of treatments")

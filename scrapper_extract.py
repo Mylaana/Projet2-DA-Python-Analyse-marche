@@ -36,10 +36,11 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
                              "note": "review_rating", "image_url": "image_url"}}
 
     # determination du nombre de page à extraire dans la catégorie
-    page_categorie_nombre = extract_nombre_pages_categorie(categorie_soup) - 1
+    page_categorie_nombre = extract_nombre_pages_categorie(categorie_soup)
 
-    for index_page in range(page_categorie_nombre):
-        if not index_page == 0: #on charge la soup de page suivante
+    for index_page in range(1, page_categorie_nombre + 1):
+        print (str(index_page) + "/" + str(page_categorie_nombre))
+        if not index_page == 1: #on charge la soup de page suivante
             categorie_soup = extraction_soupe_page_lien(lien_page.replace(
                     "index","page-" + str(index_page)))
 
