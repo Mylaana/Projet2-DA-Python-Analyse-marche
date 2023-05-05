@@ -35,7 +35,13 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
     exp.export_textfile(DEBUG, output_directory, "parsing " +
                         nom_cat + "findall", str(bloc_livre_soup))
 
-    dict_livre = {}  # ensemble des informations des livres de la catégorie
+    dict_livre = {"header": {"livre_url": "product_page_url",
+                             "upc": "universal_ product_code (upc)",
+                             "titre": "title", "prix_ttc":  "price_including_tax",
+                             "prix_ht": "price_excluding_tax", "stock": "number_available",
+                             "description": "product_description", "categorie": "category",
+                             "note": "review_rating", "image_url": "image_url"}}
+
     for bloc_livre in bloc_livre_soup:
         livre_page_url = (
             urljoin(lien_page, str(bloc_livre.find('h3').a['href'])))
@@ -52,21 +58,22 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
         livre_stock_nombre = extraction_livre_info(
             page_livre_soup, "stock (", " available)")
         livre_description = str(page_livre_soup.find_all(
-            'meta',attrs={'name':'description'})).split("\"")[1].replace(r"\n","").strip()
+            'meta', attrs={'name': 'description'})).split("\"")[1].replace(r"\n", "").strip()
         livre_note = extraction_livre_info(
-            page_livre_soup, "star-rating ","\">")
-        livre_image_url = urljoin(livre_page_url,page_livre_soup.find("img")["src"])
+            page_livre_soup, "star-rating ", "\">")
+        livre_image_url = urljoin(
+            livre_page_url, page_livre_soup.find("img")["src"])
 
-        dict_livre = {livre_titre: {"livre_url": livre_page_url, "upc": livre_upc,
-                                    "prix_ht":  livre_prix_ht, "prix_ttc": livre_prix_ttc,
-                                    "stock": livre_stock_nombre,"description": livre_description,
-                                    "categorie": nom_cat, "note": livre_note,
-                                    "image_url": livre_image_url}}
-
+        dict_livre[livre_titre] = {"livre_url": livre_page_url, "upc": livre_upc,
+                                   "titre": livre_titre, "prix_ttc": livre_prix_ttc,
+                                   "prix_ht": livre_prix_ht, "stock": livre_stock_nombre,
+                                   "description": livre_description, "categorie": nom_cat,
+                                   "note": livre_note, "image_url": livre_image_url}
     exp.export_textfile(DEBUG, output_directory,
-                    "dictionnaire livres", dict_livre)
+                        "dictionnaire livres", dict_livre)
 
     return dict_livre
+
 
 def extraction_livre_info(page_livre_soup, start, end):
     """
@@ -77,6 +84,5 @@ def extraction_livre_info(page_livre_soup, start, end):
                          re.escape(end), str(page_livre_soup))
     if resultat:
         resultat = resultat.group(1)
-    else:
-        print(resultat)
+
     return resultat

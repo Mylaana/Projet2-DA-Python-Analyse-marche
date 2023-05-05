@@ -1,7 +1,7 @@
 """module contenant les fonctions d'exportation"""
 import csv
 
-DEBUG = True
+DEBUG = False
 
 # export * to text file
 def export_textfile(debug, directory, textfile_name, text_value):  
@@ -25,4 +25,4 @@ def export_csv(data: dict, nom_fichier_csv: str, save_path: str):
     with open(save_path + nom_fichier_csv + ".csv", "w",encoding="utf-8") as fichier_csv:
         writer = csv.writer(fichier_csv, delimiter=",")
         for ligne in data:
-            writer.writerow(data[ligne])
+            writer.writerow(data[ligne].values())

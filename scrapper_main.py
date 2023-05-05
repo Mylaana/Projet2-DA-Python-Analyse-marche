@@ -45,13 +45,11 @@ exp.export_textfile(DEBUG, OUTPUT_PATH,
                     "dictionnaire categories", dict_categorie)
 
 
-# extraction de catégorie de livre
+# extraction et exportation des catégories de livre
 for categorie, lien in dict_categorie.items():
-    # todel to del quand on bouclera sur toutes les cat
-
     categorie_path = OUTPUT_PATH + "/" + categorie.upper() + "/"
-    if categorie != "fantasy":
 
+    if categorie != "fantasy":     # todel to del quand on bouclera sur toutes les cat
         continue
 
     if not os.path.exists(categorie_path):
