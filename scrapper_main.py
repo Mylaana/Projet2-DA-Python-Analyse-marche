@@ -46,7 +46,6 @@ for categorie in categorie_soup:
 exp.export_textfile(DEBUG, OUTPUT_PATH,"dictionnaire categories", dict_categorie)
 
 
-
 # extraction et exportation des catégories de livre
 for categorie, lien in dict_categorie.items():
     categorie_path = OUTPUT_PATH + "/" + categorie.upper().replace("-", " ") + "/"

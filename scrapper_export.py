@@ -6,7 +6,7 @@ import requests
 DEBUG = False
 
 # export * to text file
-def export_textfile(debug, directory, textfile_name, text_value):  
+def export_textfile(debug, directory, textfile_name, text_value):
     """fonction d'exportation de fichier texte a l'emplacement désigné"""
     if not debug:
         return None
@@ -37,7 +37,7 @@ def export_img(image_url: str, image_nom: str, save_path: str):
     image_extension = "." + image_url.split(R".")[-1]
 
     if res.status_code == 200:
-        with open(save_path + image_nom + image_extension,'wb') as f:
-            shutil.copyfileobj(res.raw, f)
+        with open(save_path + image_nom + image_extension,'wb') as fichier_image:
+            shutil.copyfileobj(res.raw, fichier_image)
     else:
         print("could not download image : " + image_nom)
