@@ -1,7 +1,6 @@
 """module contenant les fonctions d'exportation"""
 import shutil
 import csv
-import re
 import requests
 import scrapper_gene as gene
 
