@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import scrapper_export as exp
 
 
-DEBUG = True
+DEBUG = False
 
 
 def extraction_soupe_page_lien(lien_page: str, parse_only: SoupStrainer = None):
@@ -26,15 +26,14 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
     puis traitement de chaque bloc de code html de livre
     """
     categorie_soup = extraction_soupe_page_lien(
-        lien_page, SoupStrainer("ol", attrs={"class": "row"}))
-    bloc_livre_soup = categorie_soup.find_all(
-        "li", {"class": re.compile("col*")})
+        lien_page)  # , SoupStrainer("ol", attrs={"class": "row"})) delete
 
+    """
     exp.export_textfile(DEBUG, output_directory,
                         "parsing " + nom_cat, categorie_soup)
     exp.export_textfile(DEBUG, output_directory, "parsing " +
                         nom_cat + "findall", str(bloc_livre_soup))
-
+    """
     dict_livre = {"header": {"livre_url": "product_page_url",
                              "upc": "universal_ product_code (upc)",
                              "titre": "title", "prix_ttc":  "price_including_tax",
@@ -42,47 +41,85 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
                              "description": "product_description", "categorie": "category",
                              "note": "review_rating", "image_url": "image_url"}}
 
-    for bloc_livre in bloc_livre_soup:
-        livre_page_url = (
-            urljoin(lien_page, str(bloc_livre.find('h3').a['href'])))
-        page_livre_soup = extraction_soupe_page_lien(livre_page_url)
+    # determination du nombre de page à extraire dans la catégorie
+    page_categorie_nombre = extract_nombre_pages_categorie(categorie_soup) - 1
 
-        livre_titre = str(page_livre_soup.title.get_text(strip=True)).split(
-            "|", maxsplit=1)[0].strip()
-        livre_upc = extraction_livre_info(
-            page_livre_soup, "<th>UPC</th><td>", "</td>")
-        livre_prix_ht = extraction_livre_info(
-            page_livre_soup, "<th>Price (excl. tax)</th><td>", "</td>")
-        livre_prix_ttc = extraction_livre_info(
-            page_livre_soup, "<th>Price (incl. tax)</th><td>", "</td>")
-        livre_stock_nombre = extraction_livre_info(
-            page_livre_soup, "stock (", " available)")
-        livre_description = str(page_livre_soup.find_all(
-            'meta', attrs={'name': 'description'})).split("\"")[1].replace(r"\n", "").strip()
-        livre_note = extraction_livre_info(
-            page_livre_soup, "star-rating ", "\">")
-        livre_image_url = urljoin(
-            livre_page_url, page_livre_soup.find("img")["src"])
+    for index_page in range(page_categorie_nombre):
+        print("page : " + str(index_page + 1))
+        if not index_page == 1: #on charge la soup de page suivante
+            categorie_soup = extraction_soupe_page_lien(lien_page.replace(
+                    "index","page-" + index_page))
 
-        dict_livre[livre_titre] = {"livre_url": livre_page_url, "upc": livre_upc,
-                                   "titre": livre_titre, "prix_ttc": livre_prix_ttc,
-                                   "prix_ht": livre_prix_ht, "stock": livre_stock_nombre,
-                                   "description": livre_description, "categorie": nom_cat,
-                                   "note": livre_note, "image_url": livre_image_url}
+        bloc_livre_soup = categorie_soup.find_all(
+            "li", {"class": re.compile("col*")})
+
+        for bloc_livre in bloc_livre_soup:
+            livre_page_url = (
+                urljoin(lien_page, str(bloc_livre.find('h3').a['href'])))
+
+            info_livre = extraction_livre_info(livre_page_url, nom_cat)
+            dict_livre[info_livre["titre"]] = info_livre
+
     exp.export_textfile(DEBUG, output_directory,
                         "dictionnaire livres", dict_livre)
 
     return dict_livre
 
 
-def extraction_livre_info(page_livre_soup, start, end):
+def extraction_livre_info(livre_page_url, nom_cat):
+    """recuperation de toutes les infos d'un livre sous forme de dictionnaire"""
+    page_livre_soup = extraction_soupe_page_lien(livre_page_url)
+
+    livre_titre = str(page_livre_soup.title.get_text(strip=True)).split(
+        "|", maxsplit=1)[0].strip()
+    livre_upc = search_info(
+        page_livre_soup, "<th>UPC</th><td>", "</td>")
+    livre_prix_ht = search_info(
+        page_livre_soup, "<th>Price (excl. tax)</th><td>", "</td>")
+    livre_prix_ttc = search_info(
+        page_livre_soup, "<th>Price (incl. tax)</th><td>", "</td>")
+    livre_stock_nombre = search_info(
+        page_livre_soup, "stock (", " available)")
+    livre_description = str(page_livre_soup.find_all(
+        'meta', attrs={'name': 'description'})).split("\"")[1].replace(r"\n", "").strip()
+    livre_note = search_info(
+        page_livre_soup, "star-rating ", "\">")
+    livre_image_url = urljoin(
+        livre_page_url, page_livre_soup.find("img")["src"])
+
+    resultat = {"livre_url": livre_page_url, "upc": livre_upc,
+                "titre": livre_titre, "prix_ttc": livre_prix_ttc,
+                "prix_ht": livre_prix_ht, "stock": livre_stock_nombre,
+                "description": livre_description, "categorie": nom_cat,
+                "note": livre_note, "image_url": livre_image_url}
+
+    return resultat
+
+
+def search_info(texte, start, end):
     """
     on recupere le substring situé dans le code html de la page,
     situé entre les substring start et end
     """
     resultat = re.search(re.escape(start) + "(.+?)" +
-                         re.escape(end), str(page_livre_soup))
+                         re.escape(end), str(texte))
     if resultat:
         resultat = resultat.group(1)
 
     return resultat
+
+
+def extract_nombre_pages_categorie(page_categorie_soup):
+    """
+    identification du nombre eventuel de page à l'interieur d'une categorie de livre
+    a partir du soup de la premiere page
+    """
+    # resultat = page_categorie_soup.find("li", class_="current")
+    resultat = page_categorie_soup.find("li", class_="current")
+
+    if resultat:
+        resultat = str(resultat.getText()).strip().replace("Page 1 of ", "")
+    else:
+        resultat = 1
+
+    return int(resultat)
