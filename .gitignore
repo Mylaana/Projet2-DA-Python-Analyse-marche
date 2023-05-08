@@ -1,2 +1,11 @@
-OUTPUT/
-__pycache__/
+# ignorer tous les fichier du dossier ...
+*
+
+# sauf ceux la : 
+!.gitignore
+!scrapper_main.py
+!scrapper_extract.py
+!scrapper_export.py
+!scrapper_gene.py
+!requirements.txt
+README.md

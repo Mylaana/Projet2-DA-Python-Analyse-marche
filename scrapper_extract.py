@@ -38,22 +38,30 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
     # determination du nombre de page à extraire dans la catégorie
     page_categorie_nombre = extract_nombre_pages_categorie(categorie_soup)
 
+    # boucle d'extraction des pages de la catégorie
     for index_page in range(1, page_categorie_nombre + 1):
-        print (str(index_page) + "/" + str(page_categorie_nombre))
-        if not index_page == 1: #on charge la soup de page suivante
+        print(nom_cat + " : extraction de la page " +
+              str(index_page) + "/" + str(page_categorie_nombre))
+
+        # chargement des pages suivantes de la catégorie lors des itérations suivantes
+        if not index_page == 1:
             categorie_soup = extraction_soupe_page_lien(lien_page.replace(
-                    "index","page-" + str(index_page)))
+                "index", "page-" + str(index_page)))
 
         bloc_livre_soup = categorie_soup.find_all(
             "li", {"class": re.compile("col*")})
 
+        #boucle sur le bloc de code html d'un livre (= sur le nombre de livres de la page)
         for bloc_livre in bloc_livre_soup:
+            #on recupere le lien de la page d'un livre
             livre_page_url = (
                 urljoin(lien_page, str(bloc_livre.find('h3').a['href'])))
 
+            #extraction des infos du livre traité et stockage dans un dictionaire
             info_livre = extraction_livre_info(livre_page_url, nom_cat)
             dict_livre[info_livre["titre"]] = info_livre
 
+    #fonction de debug
     exp.export_textfile(DEBUG, output_directory,
                         "dictionnaire livres", dict_livre)
 
@@ -61,7 +69,10 @@ def extraction_soupe_page_categorie(nom_cat, lien_page, output_directory):
 
 
 def extraction_livre_info(livre_page_url, nom_cat):
-    """recuperation de toutes les infos d'un livre sous forme de dictionnaire"""
+    """
+    recuperation de toutes les infos d'un livre depuis la page du livre
+    sous forme de dictionnaire.
+    """
     page_livre_soup = extraction_soupe_page_lien(livre_page_url)
 
     livre_titre = str(page_livre_soup.title.get_text(strip=True)).split(
@@ -92,7 +103,7 @@ def extraction_livre_info(livre_page_url, nom_cat):
 
 def search_info(texte, start, end):
     """
-    on recupere le substring situé dans le code html de la page,
+    on recupere le substring "texte" situé dans le code html de la page,
     situé entre les substring start et end
     """
     resultat = re.search(re.escape(start) + "(.+?)" +
@@ -108,7 +119,6 @@ def extract_nombre_pages_categorie(page_categorie_soup):
     identification du nombre eventuel de page à l'interieur d'une categorie de livre
     a partir du soup de la premiere page
     """
-    # resultat = page_categorie_soup.find("li", class_="current")
     resultat = page_categorie_soup.find("li", class_="current")
 
     if resultat:

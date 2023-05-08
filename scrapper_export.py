@@ -1,13 +1,13 @@
-"""module contenant les fonctions d'exportation"""
+"""module contenant les fonctions d'exportation (chargement)"""
 import shutil
 import csv
 import requests
 import scrapper_gene as gene
 
-
+#debug
 DEBUG = False
 
-# export * to text file
+
 def export_textfile(debug, directory, textfile_name, text_value):
     """fonction d'exportation de fichier texte a l'emplacement désigné"""
     if not debug:
@@ -23,6 +23,7 @@ def export_textfile(debug, directory, textfile_name, text_value):
         else:
             output_textfile.write(str(text_value))
 
+
 def export_csv(data: dict, nom_fichier_csv: str, save_path: str):
     """exportation d'un dictionnaire de donnée en format CSV"""
 
@@ -30,6 +31,7 @@ def export_csv(data: dict, nom_fichier_csv: str, save_path: str):
         writer = csv.writer(fichier_csv, delimiter=",")
         for ligne in data:
             writer.writerow(data[ligne].values())
+
 
 def export_img(image_url: str, image_nom: str, save_path: str):
     """
@@ -39,7 +41,7 @@ def export_img(image_url: str, image_nom: str, save_path: str):
     res = requests.get(image_url, stream = True, timeout= 10)
     image_extension = R"." + image_url.split(R".")[-1]
 
-    print(image_nom + image_extension)
+    #limitation du nombre de caractere dans le nom de l'image à 100
     if len(image_nom) > 100:
         image_nom = image_nom[0:99]
 
@@ -48,4 +50,4 @@ def export_img(image_url: str, image_nom: str, save_path: str):
                   replace(" ","-") + image_extension,'wb') as fichier_image:
             shutil.copyfileobj(res.raw, fichier_image)
     else:
-        print("could not download image : " + image_nom)
+        print("impossible de télécharger l'image : " + image_nom)
