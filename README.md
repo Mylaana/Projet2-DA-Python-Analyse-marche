@@ -5,9 +5,9 @@ notes :
 -suppression des caracteres speciaux et limitation de la taille du nom des fichier images lors de l'export  (100 car max)
 
 reste à faire :
--expliquer comment installer et executer un venv
--ecrire le mail (faire un diagrame ?)
--citer des améliorations possibles (ajouter un gestionnaire d'erreur, proposer des analyses de données, tout stocker dans un meme csv)
+-expliquer comment installer et executer un venv  
+-ecrire le mail (faire un diagrame ?)  
+-citer des améliorations possibles (ajouter un gestionnaire d'erreur, proposer des analyses de données, tout stocker dans un meme csv)  
 
 
 pour aller plus loin : 
