@@ -3,7 +3,7 @@ import os
 import shutil
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
-import scrapper_export as exp
+import scrapper_load as load
 import scrapper_extract as ext
 
 #debug
@@ -28,8 +28,8 @@ page_main_soup = BeautifulSoup(
     page_main, "html.parser", parse_only=parse_restriction)
 
 #fonction de debug
-exp.export_textfile(DEBUG, OUTPUT_PATH, "code page Accueil",
-                    BeautifulSoup(page_main, "html.parser")) 
+load.export_textfile(DEBUG, OUTPUT_PATH, "code page Accueil",
+                    BeautifulSoup(page_main, "html.parser"))
 
 
 # récupération des catégories de livre depuis l'objet soup vers un dictionnaire
@@ -48,7 +48,7 @@ for categorie in categorie_soup:
                 nom_categorie).replace("-"," ")] = "http://books.toscrape.com/" + lien.get("href")
 
 #fonction de debug
-exp.export_textfile(DEBUG, OUTPUT_PATH,"dictionnaire categories", dict_categorie)
+load.export_textfile(DEBUG, OUTPUT_PATH,"dictionnaire categories", dict_categorie)
 
 
 # extraction et exportation des catégories de livre
@@ -64,7 +64,7 @@ for categorie, lien in dict_categorie.items():
         categorie, lien, categorie_path)
 
     #chargement des données dans un fichier CSV
-    exp.export_csv(dict_livres, categorie, categorie_path)
+    load.export_csv(dict_livres, categorie, categorie_path)
 
     #creation d'un sous dossier d'output "IMAGE" pour la categorie
     image_path = categorie_path + "IMAGE/"
@@ -74,7 +74,7 @@ for categorie, lien in dict_categorie.items():
     for livre_nom, livre_info  in dict_livres.items():
         if livre_nom.lower() == "header":
             continue
-        exp.export_img(livre_info["image_url"], livre_info["titre"], image_path)
+        load.export_img(livre_info["image_url"], livre_info["titre"], image_path)
 
     print(categorie + " : terminé" )
 
