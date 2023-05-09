@@ -6,7 +6,6 @@ notes :
 
 reste à faire :
 -expliquer comment installer et executer un venv
--corriger problemes de caracteres dans les exports CSV (prix)
 -ecrire le mail (faire un diagrame ?)
 -citer des améliorations possibles (ajouter un gestionnaire d'erreur, proposer des analyses de données, tout stocker dans un meme csv)
 

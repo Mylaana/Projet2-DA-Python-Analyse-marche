@@ -78,7 +78,4 @@ for categorie, lien in dict_categorie.items():
 
     print(categorie + " : terminé" )
 
-    if categorie == "travel":
-        break
-
 print("end of treatments")

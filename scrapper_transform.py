@@ -36,9 +36,9 @@ def transform_livre_info(livre_page_url, nom_cat, page_livre_soup):
     livre_upc = search_info(
         page_livre_soup, "<th>UPC</th><td>", "</td>")
     livre_prix_ht = search_info(
-        page_livre_soup, "<th>Price (excl. tax)</th><td>", "</td>").replace(r"Â","")
+        page_livre_soup, "<th>Price (excl. tax)</th><td>", "</td>")
     livre_prix_ttc = search_info(
-        page_livre_soup, "<th>Price (incl. tax)</th><td>", "</td>").replace(r"Â","")
+        page_livre_soup, "<th>Price (incl. tax)</th><td>", "</td>")
     livre_stock_nombre = search_info(
         page_livre_soup, "stock (", " available)")
     livre_description = str(page_livre_soup.find_all(
