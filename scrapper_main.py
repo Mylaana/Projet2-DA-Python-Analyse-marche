@@ -51,7 +51,7 @@ for categorie in categorie_soup:
 load.export_textfile(DEBUG, OUTPUT_PATH,"dictionnaire categories", dict_categorie)
 
 
-# extraction et exportation des catégories de livre
+# extraction et chargement des catégories de livre
 for categorie, lien in dict_categorie.items():
     categorie_path = OUTPUT_PATH + "/" + categorie.upper().replace("-", " ") + "/"
 
@@ -77,5 +77,8 @@ for categorie, lien in dict_categorie.items():
         load.export_img(livre_info["image_url"], livre_info["titre"], image_path)
 
     print(categorie + " : terminé" )
+
+    if categorie == "travel":
+        break
 
 print("end of treatments")
