@@ -5,7 +5,7 @@
 !.gitignore
 !scrapper_main.py
 !scrapper_extract.py
-!scrapper_export.py
-!scrapper_gene.py
+!scrapper_load.py
+!scrapper_transform.py
 !requirements.txt
 README.md
