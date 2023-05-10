@@ -1,4 +1,4 @@
-# Projet2-DA-Python-analyse-marche
+# Projet2 : Utilisez les bases de Python pour l'analyse de marché
 ## 1 - Création de l'environnement virtuel
 
 Ouvrez un terminal sur votre système d'exploitation. Assurez-vous que **Python est installé** en tapant la commande suivante :
